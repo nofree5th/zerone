@@ -5,3 +5,7 @@
 /bazel-zerone
 tmp
 test
+*.swp
+*.pyc
+*.pb.h
+*.pb.cc
