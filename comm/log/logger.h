@@ -47,7 +47,7 @@ Logger* Instance();
     {                                                                                          \
         if (::dry::log::Instance()->NeedLog(::dry::log::LOG_LEVEL_##LEVEL))                    \
         {                                                                                      \
-            ::dry::log::Instance()->Printf("%s" FMT_BEGIN FMT FMT_END " @%s %s +%d\n",         \
+            ::dry::log::Instance()->Printf("%s" FMT_BEGIN FMT FMT_END " %s %s +%d\n",          \
                                            ::dry::log::Logger::CalcHeader(LEVEL_DESC).c_str(), \
                                            ##ARGS,                                             \
                                            __func__,                                           \
@@ -56,8 +56,8 @@ Logger* Instance();
         }                                                                                      \
     } while (0)
 
-#define DRY_LOG_TRACE(FMT, ARGS...) __DRY_LOG(TRACE, "TRACE", " \033[0;32m", "\033[0m", FMT, ##ARGS)
-#define DRY_LOG_DEBUG(FMT, ARGS...) __DRY_LOG(DEBUG, "DEBUG", " \033[0;36m", "\033[0m", FMT, ##ARGS)
-#define DRY_LOG_WARN(PPFMT, ARGS...) __DRY_LOG(WARN, "WARN ", " \033[1;33m", "\033[0m", PPFMT, ##ARGS)
-#define DRY_LOG_INFO(PPFMT, ARGS...) __DRY_LOG(INFO, "INFO ", " ", "", PPFMT, ##ARGS)
-#define DRY_LOG_ERROR(FMT, ARGS...) __DRY_LOG(ERROR, "ERROR", " \033[1;31m", "\033[0m", FMT, ##ARGS)
+#define DRY_LOG_TRACE(FMT, ARGS...) __DRY_LOG(TRACE, "T", " \033[0;32m", "\033[0m", FMT, ##ARGS)
+#define DRY_LOG_DEBUG(FMT, ARGS...) __DRY_LOG(DEBUG, "D", " \033[0;36m", "\033[0m", FMT, ##ARGS)
+#define DRY_LOG_WARN(PPFMT, ARGS...) __DRY_LOG(WARN, "W", " \033[1;33m", "\033[0m", PPFMT, ##ARGS)
+#define DRY_LOG_INFO(PPFMT, ARGS...) __DRY_LOG(INFO, "I", " ", "", PPFMT, ##ARGS)
+#define DRY_LOG_ERROR(FMT, ARGS...) __DRY_LOG(ERROR, "E", " \033[1;31m", "\033[0m", FMT, ##ARGS)
