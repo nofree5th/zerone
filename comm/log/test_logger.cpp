@@ -8,7 +8,7 @@
 
 static void writeLog(int id)
 {
-    DRY_LOG_TRACE("#%d hello trace log: %d", id, 123);
+    DRY_LOG_TRACE("#%d hello trace log: %d, str: %s", id, 123, "str");
     DRY_LOG_DEBUG("#%d hello debug log: %d", id, 123);
     DRY_LOG_WARN("#%d hello warn log: %d", id, 123);
     DRY_LOG_INFO("#%d hello info log: %d", id, 123);
@@ -32,8 +32,4 @@ int main(int argc, char* argv[])
     {
         t->join();
     }
-
-    printf("Enter any key to break(%u, %u).\n", (uint32_t)getpid(), (uint32_t)syscall(SYS_gettid));
-    scanf("%*c");
-    printf("End\n");
 }
