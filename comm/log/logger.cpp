@@ -64,6 +64,7 @@ public:
 
         if (static_cast<size_t>(count) >= sizeof(buffer))
         {
+            static_assert(sizeof(buffer) >= 4, "buffer size should >= 4");
             buffer[sizeof(buffer) - 4] = '.';
             buffer[sizeof(buffer) - 3] = '.';
             buffer[sizeof(buffer) - 2] = '.';
