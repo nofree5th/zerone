@@ -1,0 +1,8 @@
+[start] -> {label: IgnoreCommentLine;}[start]
+[start] -> {label: IgnoreSpaces;}[start]
+[start] -> {label: '[';}[ReadSectionName]
+[ReadSectionName] -> {label: ']';}[ReadConfKey]
+[ReadConfKey] -> {label:'=';}[ReadConfValue]
+[ReadConfValue] -> {label:'\n';}[NextConfOrNextSection]
+[NextConfOrNextSection] -> {label: '['}[ReadSectionName]
+[NextConfOrNextSection] -> {label: !spaces && !'['}[ReadConfKey]
