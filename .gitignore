@@ -9,3 +9,5 @@ test
 *.pyc
 *.pb.h
 *.pb.cc
+*.o
+a.out

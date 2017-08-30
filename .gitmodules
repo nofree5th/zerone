@@ -1,0 +1,3 @@
+[submodule "submodule/trunk"]
+	path = submodule/trunk
+	url = git@github.com:nofree5th/trunk.git
