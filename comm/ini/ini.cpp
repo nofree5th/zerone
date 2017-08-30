@@ -9,6 +9,18 @@ namespace dry
 {
 namespace ini
 {
+const static std::string EMPTY_STR;
+const std::string& IniParser::GetValue(const std::string& section, const std::string& key)
+{
+    const auto& sectionItr = _sectionMap.find(section);
+    if (sectionItr == _sectionMap.end()) return EMPTY_STR;
+    const auto& curSectionMap = sectionItr->second;
+
+    const auto valueItr = curSectionMap.find(key);
+    if (valueItr == curSectionMap.end()) return EMPTY_STR;
+    return valueItr->second;
+}
+
 static int readAllFileContent(const std::string& filePath, std::string* fileContent)
 {
     std::ifstream is(filePath, std::ifstream::binary);
@@ -75,7 +87,7 @@ int IniParser::InitFromBuffer(const std::string& buffer)
         {
             if (line.back() != ']')
             {
-                DRY_LOG_WARN("Invalid section: no '=' found, line %zu : [%s]\n", lineNo, line.c_str());
+                DRY_LOG_WARN("Unclosed section , line %zu : {%s}", lineNo, line.c_str());
                 continue;
             }
 
@@ -86,32 +98,29 @@ int IniParser::InitFromBuffer(const std::string& buffer)
         {
             if (curSection.empty())
             {
-                DRY_LOG_WARN("No section before key-value item, line %zu : [%s]\n", lineNo, line.c_str());
+                DRY_LOG_WARN("No section before key-value item, line %zu : {%s}", lineNo, line.c_str());
             }
         }
 
         const auto pos = line.find('=');
         if (pos == line.npos)
         {
-            DRY_LOG_WARN("Invalid key-value item: no '=' found, line %zu : [%s]\n", lineNo, line.c_str());
+            DRY_LOG_WARN("Invalid key-value item: no '=' found, line %zu : {%s}", lineNo, line.c_str());
             continue;
         }
 
         if (pos == 0)
         {
-            DRY_LOG_WARN("Invalid key-value item: missing key, line %zu : [%s]\n", lineNo, line.c_str());
+            DRY_LOG_WARN("Invalid key-value item: missing key, line %zu : {%s}", lineNo, line.c_str());
             continue;
         }
 
         const auto& curKey   = boost::trim_copy(line.substr(0, pos - 1));
         const auto& curValue = boost::trim_copy(line.substr(pos + 1));
 
-        if (curKey.empty() || curValue.empty())
+        if (curKey.empty())
         {
-            DRY_LOG_WARN("Section: [%s], Key: {%s}, Value: {%s} empty ignored",
-                         curSection.c_str(),
-                         curKey.c_str(),
-                         curValue.c_str());
+            DRY_LOG_WARN("Empty key not valid, section: %s, line %zu : {%s}", curSection.c_str(), lineNo, line.c_str());
             continue;
         }
 

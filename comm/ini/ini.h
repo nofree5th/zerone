@@ -16,6 +16,9 @@ public:
     typedef std::unordered_map<std::string, std::string> KeyValueMap;
     typedef std::unordered_map<std::string, KeyValueMap> SectionMap;
 
+    // Not exist section or key will return empty value
+    const std::string& GetValue(const std::string& section, const std::string& key);
+
 private:
     SectionMap _sectionMap;
 };
