@@ -11,7 +11,7 @@ cc_library(
         "//visibility:public",
     ],
     deps = [
-        "//comm/error",
+        "//lib/error",
         "//third_party/glog",
     ],
 )
@@ -22,6 +22,6 @@ cc_binary(
         "test_logger.cpp",
     ],
     deps = [
-        "//comm",
+        "//lib:core",
     ],
 )

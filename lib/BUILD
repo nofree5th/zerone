@@ -1,16 +1,16 @@
 cc_library(
-    name = "comm",
+    name = "core",
     srcs = [
-        "comm.cpp",
+        "core.cpp",
     ],
     hdrs = [
-        "comm.h",
+        "core.h",
     ],
     visibility = [
         "//visibility:public",
     ],
     deps = [
-        "//comm/error",
-        "//comm/log",
+        "//lib/error",
+        "//lib/log",
     ],
 )

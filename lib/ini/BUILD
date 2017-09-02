@@ -3,7 +3,7 @@ cc_library(
     srcs = ["ini.cpp"],
     hdrs = ["ini.h"],
     deps = [
-        "//comm/log",
+        "//lib/log",
         "//third_party/boost:algorithm",
         "//third_party/boost:smart_ptr",
     ],

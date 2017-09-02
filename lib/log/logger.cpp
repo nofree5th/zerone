@@ -1,4 +1,4 @@
-#include "comm/log/logger.h"
+#include "lib/log/logger.h"
 
 #include <fcntl.h>
 #include <stdarg.h>
@@ -13,7 +13,7 @@
 #include <mutex>
 #include <sstream>
 
-#include "comm/error/error.h"
+#include "lib/error/error.h"
 
 namespace dry
 {

@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <string>
-#include "comm/log/logger_helper.h"
+#include "lib/log/logger_helper.h"
 
 namespace dry
 {

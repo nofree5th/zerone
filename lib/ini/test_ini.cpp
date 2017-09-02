@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "comm/ini/ini.h"
+#include "lib/ini/ini.h"
 
 TEST(IniParser, ReadFromFile)
 {

@@ -1,9 +1,11 @@
-#include "comm/ini/ini.h"
+#include "lib/ini/ini.h"
+
 #include <fstream>
+
 #include "boost/algorithm/string.hpp"
 #include "boost/smart_ptr.hpp"
-#include "comm/error/error.h"
-#include "comm/log/logger.h"
+#include "lib/error/error.h"
+#include "lib/log/logger.h"
 
 namespace dry
 {

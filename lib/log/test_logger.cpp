@@ -4,7 +4,7 @@
 #include <memory>
 #include <thread>
 #include <vector>
-#include "comm/comm.h"
+#include "lib/core.h"
 
 static void writeLog(int id)
 {
@@ -17,7 +17,7 @@ static void writeLog(int id)
 
 int main(int argc, char* argv[])
 {
-    dry::comm::Init(&argc, &argv);
+    dry::lib::Init(&argc, &argv);
 
     dry::log::Instance()->Init("", dry::log::LOG_LEVEL_TRACE);
 
