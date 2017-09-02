@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package test_pbjson;
+
+message Item {
+    uint32 u32 = 1;
+    int32 i32  = 2;
+    string str = 3;
+    double d   = 4;
+    bytes b    = 5;
+    uint64 u64 = 6;
+    float f    = 7;
+}
+
+message Wrap {
+    uint32 id               = 1;
+    string ostr             = 2;
+    repeated int32 id_list  = 3;
+    repeated Item item_list = 4;
+}
