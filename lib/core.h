@@ -1,4 +1,8 @@
 #pragma once
+
+#include <cinttypes>
+#include <string>
+
 #include "lib/error/error.h"
 #include "lib/log/logger.h"
 

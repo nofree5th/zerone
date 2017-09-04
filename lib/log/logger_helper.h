@@ -23,7 +23,7 @@
 #define DRY_CALL_LOG(FUNC, ARGS...)                                           \
     do                                                                        \
     {                                                                         \
-        const int __DRY_ret__ = FUNC(ARGS);                                   \
+        const int __DRY_ret__ = (FUNC)(ARGS);                                 \
         if (__DRY_ret__ != 0)                                                 \
         {                                                                     \
             DRY_LOG_ERROR("CallFunc %s failed, ret: %d", #FUNC, __DRY_ret__); \
