@@ -1,5 +1,6 @@
 #include "lib/net/socket.h"
 
+#include <fcntl.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include "lib/error/error.h"
@@ -19,6 +20,16 @@ Socket Socket::CreateTcpStream()
     return Socket(fd);
 }
 
+Socket& Socket::operator=(Socket&& that)
+{
+    if (this != &that)
+    {
+        tryRelease();
+        std::swap(_fd, that._fd);
+    }
+    return *this;
+}
+
 Socket Socket::Accept()
 {
     struct sockaddr_in peerAddr;
@@ -32,7 +43,7 @@ Socket Socket::Accept()
     return Socket(connFd);
 }
 
-Socket::~Socket()
+void Socket::tryRelease()
 {
     if (_fd >= 0)
     {
@@ -41,11 +52,16 @@ Socket::~Socket()
     }
 }
 
+Socket::~Socket()
+{
+    tryRelease();
+}
+
 int Socket::ReuseAddr()
 {
     const int optval = 1;
     const int ret    = ::setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &optval, static_cast<socklen_t>(sizeof optval));
-    DRY_RETURN_IF_F(ret < 0, dry::error::EC_BAD_LUCK, "Reuse addr failed: %d", errno);
+    DRY_RETURN_IF_F(ret < 0, dry::error::EC_BAD_LUCK, "Reuse addr failed: %d, fd: %d", errno, _fd);
 
     return 0;
 }
@@ -59,10 +75,22 @@ int Socket::ReusePort()
     return 0;
 }
 
+int Socket::SetFlags(const int extraFlags)
+{
+    int flags = fcntl(_fd, F_GETFL, 0);
+    DRY_RETURN_IF_F(flags == -1, dry::error::EC_BAD_LUCK, "GETFL failed: %d, fd: %d", errno, _fd);
+
+    flags |= extraFlags;
+
+    const int ret = fcntl(_fd, F_SETFL, flags);
+    DRY_RETURN_IF_F(ret == -1, dry::error::EC_BAD_LUCK, "SETFL failed: %d, fd: %d", errno, _fd);
+    return ret;
+}
+
 int Socket::Listen()
 {
     const int ret = ::listen(_fd, SOMAXCONN);
-    DRY_RETURN_IF_F(ret < 0, dry::error::EC_BAD_LUCK, "Listen failed: %d", errno);
+    DRY_RETURN_IF_F(ret < 0, dry::error::EC_BAD_LUCK, "Listen failed: %d, fd: %d", errno, _fd);
 
     return 0;
 }
@@ -70,7 +98,8 @@ int Socket::Listen()
 int Socket::Bind(const InetAddress& addr)
 {
     const int ret = ::bind(_fd, (const struct sockaddr*)(&addr.GetAddr()), sizeof(addr.GetAddr()));
-    DRY_RETURN_IF_F(ret < 0, dry::error::EC_BAD_LUCK, "Bind to addr: %s failed: %d", addr.ToString().c_str(), errno);
+    DRY_RETURN_IF_F(
+        ret < 0, dry::error::EC_BAD_LUCK, "Bind to addr: %s failed: %d, fd: %d", addr.ToString().c_str(), errno, _fd);
 
     return 0;
 }
