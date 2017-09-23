@@ -1,12 +1,12 @@
 #pragma once
 #include "boost/core/noncopyable.hpp"
-#include "lib/core.h"
+#include "lib/svr/server_options.h"
 
 namespace dry
 {
 namespace svr
 {
-class TcpServer : boost::noncopyable
+class Server : boost::noncopyable
 {
 public:
     void Start();

@@ -1,4 +1,4 @@
-#include "lib/svr/tcp_server.h"
+#include "lib/svr/server.h"
 
 #include "lib/svr/server_thread.h"
 
@@ -10,7 +10,7 @@ namespace dry
 {
 namespace svr
 {
-void TcpServer::Start()
+void Server::Start()
 {
     ServerOptions options = {
         .port           = 12345,  //
