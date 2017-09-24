@@ -52,6 +52,33 @@ int Url::ParseFromArray(const char* rawUrl, const size_t rawUrlLen, const bool i
     return 0;
 }
 
+std::string Url::ToString() const
+{
+    std::string result;
+    if (!schema.empty())
+    {
+        result.append(schema);
+        result.append("://");
+    }
+    result.append(host);
+    if (port != 0)
+    {
+        result.append(":");
+        result.append(std::to_string(port));
+    }
+    if (rawQuery.empty())
+    {
+        result.append("?");
+        result.append(rawQuery);
+    }
+    if (fragment.empty())
+    {
+        result.append("#");
+        result.append(fragment);
+    }
+    return result;
+}
+
 }  // end namespace url
 }  // end namespace net
 }  // end namespace dry

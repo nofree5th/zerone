@@ -1,5 +1,6 @@
 #pragma once
 #include "boost/core/noncopyable.hpp"
+#include "lib/bytes/buffer.h"
 #include "lib/net/socket.h"
 #include "lib/svr/server_options.h"
 
@@ -19,6 +20,7 @@ public:
 private:
     ::dry::net::Socket _socket;
     const ServerOptions& _options;
+    ::dry::bytes::Buffer _buf;
 };
 
 }  // end namespace svr

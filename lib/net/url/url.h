@@ -22,6 +22,7 @@ struct Url
     {
         return ParseFromArray(rawUrl.data(), rawUrl.size(), isConnect);
     }
+    std::string ToString() const;
 };
 
 }  // end namespace url

@@ -29,7 +29,9 @@ cc_library(
     ],
     deps = [
         "//lib:core",
+        "//lib/bytes:buffer",
         "//lib/net",
+        "//lib/net/http",
         "//third_party/boost:core",
         "//third_party/libco",
     ],
@@ -42,5 +44,6 @@ cc_binary(
     ],
     deps = [
         ":svr",
+        "//third_party/gflags",
     ],
 )
