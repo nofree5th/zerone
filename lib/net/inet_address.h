@@ -10,7 +10,10 @@ namespace net
 class InetAddress
 {
 public:
+    InetAddress() : _addr{0} {}
     InetAddress(const std::string& ip, uint16_t port);
+
+    void Assign(const std::string& ip, uint16_t port);
 
     const sockaddr_in& GetAddr() const { return _addr; }
     std::string ToString() const;

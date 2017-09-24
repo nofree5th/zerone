@@ -1,4 +1,3 @@
-#pragma once
 #include "lib/svr/connection_handler.h"
 #include "lib/log/logger.h"
 

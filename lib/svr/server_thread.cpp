@@ -41,14 +41,9 @@ void ServerThread::runServerThread(ServerThread* pThis)
 int ServerThread::run()
 {
     // init & run workers
-    _workers.reserve(_options.coroutineCount);
-    _occupyWorkers.reserve(_options.coroutineCount);
-    if (_options.coroutineCount != 1)
-    {
-        DRY_LOG_ERROR("Co count only 1");
-        return __LINE__;
-    }
-    for (uint32_t i = 0; i < _options.coroutineCount; ++i)
+    _workers.reserve(_options.CoroutineCount());
+    _occupyWorkers.reserve(_options.CoroutineCount());
+    for (uint32_t i = 0; i < _options.CoroutineCount(); ++i)
     {
         _workers.emplace_back(std::unique_ptr<Worker>(new Worker(this, i + 1)));
     }

@@ -14,6 +14,9 @@ class Worker : boost::noncopyable
 public:
     Worker(ServerThread* scheduel, const uint32_t workerId);
 
+protected:
+    friend class ServerThread;
+    // ServerThread call this
     void HandleNewConnection(::dry::net::Socket&& newConnection);
 
 private:

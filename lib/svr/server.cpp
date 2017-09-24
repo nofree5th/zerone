@@ -10,25 +10,20 @@ namespace dry
 {
 namespace svr
 {
-void Server::Start()
+int Server::StartUntilWorldOfEnd()
 {
-    ServerOptions options = {
-        .port           = 12345,  //
-        .threadCount    = 1,
-        .coroutineCount = 1,
-    };
-
     std::vector<std::unique_ptr<ServerThread>> threads;
 
-    for (uint32_t i = 0; i < options.threadCount; ++i)
+    for (uint32_t i = 0; i < _options.ThreadCount(); ++i)
     {
-        threads.push_back(std::unique_ptr<ServerThread>(new ServerThread(i + 1, options)));
+        threads.push_back(std::unique_ptr<ServerThread>(new ServerThread(i + 1, _options)));
     }
 
     for (auto& thread : threads)
     {
         thread->Join();
     }
+    return 0;
 }
 
 }  // end namespace svr

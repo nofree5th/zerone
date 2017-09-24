@@ -37,16 +37,14 @@ int Acceptor::run()
     DRY_CALL_LOG(listenSocket.ReuseAddr);
     DRY_CALL_LOG(listenSocket.ReusePort);
 
-    // TODO:
-    ::dry::net::InetAddress addr("127.0.0.1", _scheduel->Options().port);
-    DRY_CALL_LOG(listenSocket.Bind, addr);
+    DRY_CALL_LOG(listenSocket.Bind, _scheduel->Options().ListenAddress());
 
     DRY_CALL_LOG(listenSocket.Listen);
     DRY_CALL_LOG(listenSocket.SetFlags, O_NONBLOCK);
 
-    DRY_LOG_TRACE("Listen socket create succ: %d, listen on port %u",
+    DRY_LOG_TRACE("Listen socket create succ, fd %d, listen on %s",
                   listenSocket.Fd(),
-                  static_cast<uint32_t>(_scheduel->Options().port));
+                  _scheduel->Options().ListenAddress().ToString().c_str());
 
     while (true)
     {

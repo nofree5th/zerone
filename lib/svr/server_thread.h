@@ -14,6 +14,8 @@ namespace dry
 {
 namespace svr
 {
+class Worker;
+class Acceptor;
 class ServerThread : boost::noncopyable
 {
 public:
@@ -21,10 +23,17 @@ public:
     ~ServerThread();
 
     const uint32_t ScheduleId() const { return _id; }
-    void HandleNewConnection(::dry::net::Socket&& newConnection);
-    void AddOccupyWorker(Worker* self);
     void Join() { _thread.join(); }
     const ServerOptions& Options() const { return _options; }
+
+protected:
+    friend class Worker;
+    // Worker call this
+    void AddOccupyWorker(Worker* self);
+
+    friend class Acceptor;
+    // Acceptor call this
+    void HandleNewConnection(::dry::net::Socket&& newConnection);
 
 private:
     int run();

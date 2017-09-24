@@ -9,7 +9,11 @@ namespace svr
 class Server : boost::noncopyable
 {
 public:
-    void Start();
+    Server(const ServerOptions& options) : _options(options) {}
+    int StartUntilWorldOfEnd();
+
+private:
+    ServerOptions _options;
 };
 
 }  // end namespace svr
