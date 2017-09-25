@@ -1,5 +1,6 @@
 #include "lib/net/http/request.h"
 #include <cassert>
+#include "lib/log/logger.h"
 
 namespace dry
 {
@@ -22,8 +23,36 @@ Request::Request()
 
 const std::string Request::ToString() const
 {
-    // TODO:
-    return std::string() + "Url:" + _url.ToString() + ", Body:" + _body;
+    std::string result;
+    // append Request line
+    {
+        result.append(http_method_str(static_cast<http_method>(_parser.method)));
+
+        result.append(" ");
+        result.append(_url.ToString());
+        result.append(" ");
+
+        result.append("HTTP/");
+        result.append(std::to_string(_parser.http_major));
+        result.append(".");
+        result.append(std::to_string(_parser.http_minor));
+        result.append("\r\n");
+    }
+    // append headers
+    if (!_header.Empty())
+    {
+        result.append(_header.ToString());
+    }
+
+    result.append("\r\n");
+    // if POST append body
+    if (!_body.empty())
+    {
+        result.append(_body);
+        result.append("\r\n");
+    }
+
+    return result;
 }
 
 int Request::onUrl(http_parser* parser, const char* at, size_t length)
@@ -66,14 +95,22 @@ int Request::onMessageComplete(http_parser* parser)
     return 0;
 }
 
-size_t Request::TryParse(const char* data, size_t len, bool* completed)
+int Request::TryParse(const char* data, size_t len, size_t* parsedBytes, bool* completed)
 {
     assert(completed != nullptr);
     assert(!_completed);
 
-    const size_t parsedBytes = http_parser_execute(&_parser, &_settings, data, len);
-    *completed               = _completed;
-    return parsedBytes;
+    *parsedBytes = http_parser_execute(&_parser, &_settings, data, len);
+    *completed   = _completed;
+    if (_parser.http_errno != 0)
+    {
+        DRY_LOG_ERROR("Parser meet error: %s, str(%zu): %s",
+                      http_errno_name(HTTP_PARSER_ERRNO(&_parser)),
+                      len,
+                      std::string(data, std::max(len, size_t(128))).c_str());
+        return _parser.http_errno;
+    }
+    return 0;
 }
 
 }  // end namespace http

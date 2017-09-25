@@ -1,5 +1,6 @@
 #include "lib/net/url/url.h"
 
+#include "lib/log/logger.h"
 #include "third_party/http-parser/upstream/http_parser.h"
 
 namespace dry
@@ -66,15 +67,30 @@ std::string Url::ToString() const
         result.append(":");
         result.append(std::to_string(port));
     }
-    if (rawQuery.empty())
+
+    if (!path.empty())
     {
-        result.append("?");
-        result.append(rawQuery);
+        result.append(path);
     }
-    if (fragment.empty())
+
+    if (!rawQuery.empty() || !fragment.empty())
     {
-        result.append("#");
-        result.append(fragment);
+        // Maybe not necessary?
+        if (path.empty())
+        {
+            result.append("/");
+        }
+
+        if (rawQuery.empty())
+        {
+            result.append("?");
+            result.append(rawQuery);
+        }
+        if (fragment.empty())
+        {
+            result.append("#");
+            result.append(fragment);
+        }
     }
     return result;
 }

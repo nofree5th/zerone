@@ -16,12 +16,13 @@ class Request
 public:
     Request();
 
-    size_t TryParse(const char* data, const size_t len, bool* completed);
+    int TryParse(const char* data, const size_t len, size_t* parsedBytes, bool* completed);
     const ::dry::net::url::Url& Url() const { return _url; }
     const std::string& Body() const { return _body; }
     const ::dry::net::http::Header& Header() const { return _header; }
     const http_parser& Parser() const { return _parser; }
     const std::string ToString() const;
+    bool KeepAlive() const { return http_should_keep_alive(&_parser) != 0; }
 
 private:
     static int onUrl(http_parser*, const char* at, size_t length);

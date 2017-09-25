@@ -20,6 +20,8 @@ public:
     void Set(const std::string& key, std::string&& value) noexcept;
     // Get the first value associated with the given key.
     const std::string& Get(const std::string& key) noexcept;
+    std::string ToString() const;
+    bool Empty() const { return _headers.empty(); }
 
 private:
     std::unordered_map<std::string, std::vector<std::string>> _headers;

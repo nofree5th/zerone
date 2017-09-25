@@ -54,6 +54,7 @@ static void echoProcessing(::dry::net::Socket& socket)
 
 static void httpProcessing(::dry::net::Socket& socket, ::dry::bytes::Buffer& buf)
 {
+__KEEP_ALIVE:
     buf.Reset();
     // RecvingRequest
     dry::net::http::Request req;
@@ -66,39 +67,40 @@ static void httpProcessing(::dry::net::Socket& socket, ::dry::bytes::Buffer& buf
             if (ret == 0)
             {
                 DRY_LOG_INFO("Peer close connection: %d", socket.Fd());
-                socket.Release();
                 return;
             }
             if (ret == -1)
             {
                 DRY_LOG_ERROR("Read error: %d, errno: %d", socket.Fd(), errno);
-                socket.Release();
                 return;
             }
             buf.Write(ret);
+
+            DRY_LOG_TRACE("Read %d bytes", static_cast<int>(ret));
         }
 
         // try parse
         {
             size_t dataLen   = 0;
             const char* data = buf.ReadPtr(&dataLen);
+            DRY_LOG_TRACE("TryParse %zu bytes: %s", dataLen, std::string(data, dataLen).c_str());
 
-            bool isCompleted = false;
-            size_t readBytes = req.TryParse(data, dataLen, &isCompleted);
+            bool isCompleted   = false;
+            size_t parsedBytes = 0;
+            const int parseRet = req.TryParse(data, dataLen, &parsedBytes, &isCompleted);
+            if (parseRet != 0) return;  // parse meet error
+
             if (isCompleted)
             {
                 buf.Reset();
                 break;
             }
-            buf.Read(readBytes);
+            buf.Read(parsedBytes);
 
-            DRY_LOG_INFO("Wait req to complete: %zu bytes got, in(%zu : %s)",
-                         readBytes,
-                         dataLen,
-                         std::string(data, dataLen).c_str());
+            DRY_LOG_INFO("Wait req to complete: %zu bytes got", parsedBytes);
         }
     }
-    DRY_LOG_INFO("Read req succ: %s", req.ToString().c_str());
+    DRY_LOG_INFO("Read req succ: \n%s", req.ToString().c_str());
 
     // Processing
     // SendingResponse
@@ -111,7 +113,6 @@ hello
         if (writeRet == -1)
         {
             DRY_LOG_ERROR("Write error: %d, errno: %d", socket.Fd(), errno);
-            socket.Release();
             return;
         }
         if ((size_t)writeRet != response.size())
@@ -120,8 +121,11 @@ hello
                           socket.Fd(),
                           static_cast<size_t>(response.size()),
                           static_cast<size_t>(writeRet));
-            socket.Release();
             return;
+        }
+        if (req.KeepAlive())
+        {
+            goto __KEEP_ALIVE;
         }
         DRY_LOG_TRACE("Send all success, don't keep alive");
     }

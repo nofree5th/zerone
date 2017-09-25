@@ -8,6 +8,19 @@ namespace http
 {
 const static std::string g_empty;
 
+std::string Header::ToString() const
+{
+    std::string result;
+    for (const auto& p : _headers)
+    {
+        for (const auto& v : p.second)
+        {
+            result += p.first + ": " + v + "\r\n";
+        }
+    }
+    return result;
+}
+
 void Header::Add(const std::string& key, const std::string& value) noexcept
 {
     _headers[key].push_back(value);

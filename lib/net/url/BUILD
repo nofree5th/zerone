@@ -10,6 +10,7 @@ cc_library(
         "//visibility:public",
     ],
     deps = [
+        "//lib/log",
         "//third_party/http-parser",
     ],
 )
