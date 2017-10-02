@@ -1,6 +1,7 @@
 #include "lib/svr/connection_handler.h"
 #include "lib/log/logger.h"
 #include "lib/net/http/request.h"
+#include "lib/net/http/response.h"
 
 namespace dry
 {
@@ -105,21 +106,23 @@ __KEEP_ALIVE:
     // Processing
     // SendingResponse
     {
-        std::string response   = R"__(HTTP/1.1 200 OK
+        dry::net::http::Response response;
+        response.SetStatus(HTTP_STATUS_OK);
+        response.MutableHeader()->Set("Server", "lib/svr");
+        response.SetBody(req.Body() + "\n");
 
-hello
-)__";
-        const ssize_t writeRet = write(socket.Fd(), response.data(), response.size());
+        const auto& rspData    = response.ToString();
+        const ssize_t writeRet = write(socket.Fd(), rspData.data(), rspData.size());
         if (writeRet == -1)
         {
             DRY_LOG_ERROR("Write error: %d, errno: %d", socket.Fd(), errno);
             return;
         }
-        if ((size_t)writeRet != response.size())
+        if ((size_t)writeRet != rspData.size())
         {
             DRY_LOG_ERROR("Write partial error: %d, size %zu -> %zu",
                           socket.Fd(),
-                          static_cast<size_t>(response.size()),
+                          static_cast<size_t>(rspData.size()),
                           static_cast<size_t>(writeRet));
             return;
         }

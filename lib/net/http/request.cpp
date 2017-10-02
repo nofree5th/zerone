@@ -57,12 +57,14 @@ const std::string Request::ToString() const
 
 int Request::onUrl(http_parser* parser, const char* at, size_t length)
 {
+    DRY_LOG_TRACE("onUrl: %s", std::string(at, length).c_str());
     Request* pThis = reinterpret_cast<Request*>(parser->data);
     return pThis->_url.ParseFromArray(at, length);
 }
 
 int Request::onHeaderField(http_parser* parser, const char* at, size_t length)
 {
+    DRY_LOG_TRACE("OnHeaderField: %s", std::string(at, length).c_str());
     Request* pThis = reinterpret_cast<Request*>(parser->data);
 
     pThis->_lastHeaderKey.assign(at, length);
@@ -72,6 +74,7 @@ int Request::onHeaderField(http_parser* parser, const char* at, size_t length)
 
 int Request::onHeaderValue(http_parser* parser, const char* at, size_t length)
 {
+    DRY_LOG_TRACE("OnHeaderValue: %s", std::string(at, length).c_str());
     Request* pThis = reinterpret_cast<Request*>(parser->data);
 
     pThis->_header.Set(pThis->_lastHeaderKey, std::string(at, length));

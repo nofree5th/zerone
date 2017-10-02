@@ -3,10 +3,12 @@ cc_library(
     srcs = [
         "header.cpp",
         "request.cpp",
+        "response.cpp",
     ],
     hdrs = [
         "header.h",
         "request.h",
+        "response.h",
     ],
     visibility = [
         "//visibility:public",
